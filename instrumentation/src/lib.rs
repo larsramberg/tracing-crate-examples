@@ -1,14 +1,27 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+use tracing::{debug, info, instrument, warn};
+
+#[derive(Debug)]
+pub struct Yak {
+    wool_quantity: i8,
+    is_mean: bool,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl Yak {
+    pub fn new(wool_quantity: i8, is_mean: bool) -> Self {
+        Self {
+            wool_quantity,
+            is_mean,
+        }
+    }
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    #[instrument]
+    pub fn shave(&mut self) {
+        if self.is_mean {
+            warn!("The yak fights back, refusing to be groomed");
+            return;
+        }
+        info!("The yak was sucesfully shaved!");
+
+        self.wool_quantity = 0;
     }
 }
