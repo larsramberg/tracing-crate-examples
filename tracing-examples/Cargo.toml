@@ -6,4 +6,9 @@ edition = "2024"
 [dependencies]
 tracing-subscriber = { version = "0.3.22" }
 tracing.workspace = true
+tracing-opentelemetry = "0.32.1"
 instrumentation = { path = "../instrumentation" }
+opentelemetry = "0.31.0"
+opentelemetry_sdk = "0.31.0"
+opentelemetry-otlp = "0.31.0"
+opentelemetry-semantic-conventions = "0.31.0"

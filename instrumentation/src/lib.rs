@@ -1,3 +1,5 @@
+use std::{thread, time::Duration};
+
 use tracing::{debug, info, instrument, warn};
 
 #[derive(Debug)]
@@ -15,13 +17,33 @@ impl Yak {
     }
 
     #[instrument]
-    pub fn shave(&mut self) {
-        if self.is_mean {
-            warn!("The yak fights back, refusing to be groomed");
-            return;
-        }
-        info!("The yak was sucesfully shaved!");
+    fn shave(&mut self) -> bool {
+        thread::sleep(Duration::from_secs(1));
 
+        if self.is_mean {
+            warn!("I will not be shaved, peasant!");
+            return false;
+        }
+        
+        tracing::info!("I was shaved!");
         self.wool_quantity = 0;
+        true
+    }
+}
+
+#[derive(Debug)]
+pub struct Farmer {
+
+}
+
+impl Farmer {
+    #[instrument]
+    pub fn shave(&self, yak: &mut Yak) {
+        tracing::info!("I am shaving the yak...");
+        if yak.shave() {
+            tracing::info!("I managed to collect yak wool!");
+        } else {
+            tracing::warn!("Oh no, the yak is too mean to shave!");
+        }
     }
 }
