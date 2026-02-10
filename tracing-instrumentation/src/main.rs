@@ -1,6 +1,7 @@
 mod actors;
 
 use actors::Yak;
+use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
 use std::{thread, time::Duration};
 
 fn main() {
@@ -27,5 +28,7 @@ fn shave_yaks(mut yaks: Vec<Yak>) {
 }
 
 fn init_tracing_subscriber() {
-    tracing_subscriber::fmt().init();
+    let fmt_layer = fmt::layer();
+    
+    tracing_subscriber::registry().with(fmt_layer).init();
 }
