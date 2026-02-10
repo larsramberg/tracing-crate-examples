@@ -1,6 +1,6 @@
 use std::{thread, time::Duration};
 
-use tracing::{instrument, warn};
+use tracing;
 
 #[derive(Debug)]
 pub struct Yak {
@@ -16,12 +16,11 @@ impl Yak {
         }
     }
 
-    #[instrument]
     pub(crate) fn shave(&mut self) -> bool {
         thread::sleep(Duration::from_secs(1));
 
         if self.is_mean {
-            warn!("I will not be shaved, peasant!");
+            tracing::warn!("I will not be shaved, peasant!");
             return false;
         }
 
