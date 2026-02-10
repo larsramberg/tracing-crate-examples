@@ -13,12 +13,12 @@ fn main() {
     init_tracing();
     tracing::info!("I will tend to my Yaks today");
 
-    let yaks = (1..10)
-        .map(|i| Yak::new(100, i % 4 == 0))
+    let yaks = (1..11)
+        .map(|i| Yak::new(100, i % 5 == 0))
         .collect::<Vec<Yak>>();
-    shave_yaks(yaks);
 
-    thread::sleep(Duration::from_secs(20));
+    shave_yaks(yaks);
+    thread::sleep(Duration::from_secs(2));
 }
 
 #[instrument]

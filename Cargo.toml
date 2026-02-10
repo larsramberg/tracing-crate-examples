@@ -1,6 +1,7 @@
 [workspace]
 resolver = "3"
-members = ["println", "otel-tracing"]
+members = ["println", "tracing-otel", "tracing-instrumentation"]
 
 [workspace.dependencies]
 tracing = "0.1.44"
+tracing-subscriber = "0.3.22"

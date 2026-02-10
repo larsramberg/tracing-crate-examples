@@ -1,10 +1,10 @@
 mod actors;
-use std::{thread, time::Duration};
 
 use actors::Yak;
+use std::{thread, time::Duration};
 
 fn main() {
-    println!("I will tend to my Yaks today");
+    tracing::info!("I will tend to my Yaks today");
 
     let yaks = (1..11)
         .map(|i| Yak::new(100, i % 5 == 0))
@@ -16,11 +16,11 @@ fn main() {
 
 fn shave_yaks(mut yaks: Vec<Yak>) {
     for yak in &mut yaks {
-        println!("I am shaving the yak...");
+        tracing::info!("I am shaving the yak...");
         if yak.shave() {
-            println!("I managed to collect yak wool!");
+            tracing::info!("I managed to collect yak wool!");
         } else {
-            println!("Oh no, the yak is too mean to shave!");
+            tracing::warn!("Oh no, the yak is too mean to shave!");
         }
     }
 }
