@@ -2,12 +2,13 @@ mod actors;
 
 use actors::Yak;
 use opentelemetry::{KeyValue, trace::TracerProvider as _};
-use opentelemetry_otlp::{Protocol, WithExportConfig};
+use opentelemetry_otlp::{ExportConfig, Protocol, WithExportConfig};
 use opentelemetry_sdk::Resource;
 use opentelemetry_semantic_conventions::resource::SERVICE_NAME;
+use tracing_opentelemetry::OpenTelemetryLayer;
 use std::{thread, time::Duration};
 use tracing::instrument;
-use tracing_subscriber::{Registry, layer::SubscriberExt, util::SubscriberInitExt};
+use tracing_subscriber::{Registry, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 fn main() {
     init_tracing();
@@ -18,7 +19,7 @@ fn main() {
         .collect::<Vec<Yak>>();
 
     shave_yaks(yaks);
-    thread::sleep(Duration::from_secs(2));
+    thread::sleep(Duration::from_secs(10));
 }
 
 #[instrument]
@@ -34,6 +35,17 @@ fn shave_yaks(mut yaks: Vec<Yak>) {
 }
 
 fn init_tracing() {
+    let fmt_layer = fmt::layer();
+    
+    let subscriber = 
+        Registry::default()
+        .with(get_trace_layer())
+        .with(fmt_layer);
+
+    subscriber.init();
+}
+
+fn get_trace_layer() -> OpenTelemetryLayer<Registry, opentelemetry_sdk::trace::Tracer> {
     let otlp_exporter = opentelemetry_otlp::SpanExporter::builder()
         .with_http()
         .with_protocol(Protocol::HttpBinary)
@@ -52,9 +64,5 @@ fn init_tracing() {
 
     let tracer = tracer_provider.tracer("tracer_0");
 
-    let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
-
-    let subscriber = Registry::default().with(telemetry);
-
-    subscriber.init();
+    tracing_opentelemetry::layer().with_tracer(tracer)
 }
