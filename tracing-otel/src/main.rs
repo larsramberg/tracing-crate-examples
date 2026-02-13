@@ -83,7 +83,6 @@ fn get_trace_layer() -> OpenTelemetryLayer<Registry, opentelemetry_sdk::trace::T
         .build()
         .unwrap();
 
-    // Create a tracer provider with the exporter
     let tracer_provider = opentelemetry_sdk::trace::SdkTracerProvider::builder()
         .with_batch_exporter(otlp_exporter)
         .with_resource(
