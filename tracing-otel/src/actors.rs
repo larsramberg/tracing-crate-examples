@@ -1,6 +1,7 @@
 use std::{thread, time::Duration};
 
-use tracing::instrument;
+use tracing::{Span, instrument};
+use tracing_opentelemetry::OpenTelemetrySpanExt;
 
 #[derive(Debug)]
 pub struct Yak {
@@ -22,10 +23,12 @@ impl Yak {
 
         if self.is_mean {
             tracing::warn!("I will not be shaved, peasant!");
+            Span::current().set_status(opentelemetry::trace::Status::Error { description: "Yak was too mean to shave".into() });
             return false;
         }
 
         tracing::info!("I was shaved!");
+        Span::current().set_status(opentelemetry::trace::Status::Ok);
         self.wool_quantity = 0;
         true
     }

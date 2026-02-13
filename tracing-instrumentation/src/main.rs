@@ -2,8 +2,11 @@ mod actors;
 
 use actors::Yak;
 use std::{thread, time::Duration};
+use tracing::instrument;
+use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 fn main() {
+    init_tracing_subscriber();
     tracing::info!("I will tend to my Yaks today");
 
     let yaks = (1..11)
@@ -14,6 +17,7 @@ fn main() {
     thread::sleep(Duration::from_secs(2));
 }
 
+#[instrument]
 fn shave_yaks(mut yaks: Vec<Yak>) {
     for yak in &mut yaks {
         tracing::info!("I am shaving the yak...");
@@ -23,4 +27,9 @@ fn shave_yaks(mut yaks: Vec<Yak>) {
             tracing::warn!("Oh no, the yak is too mean to shave!");
         }
     }
+}
+
+fn init_tracing_subscriber() {
+    let fmt_layer = fmt::layer();
+    tracing_subscriber::registry().with(fmt_layer).init();
 }
