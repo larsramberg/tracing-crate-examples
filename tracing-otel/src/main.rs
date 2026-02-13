@@ -11,8 +11,8 @@ use opentelemetry_sdk::{
 };
 use opentelemetry_semantic_conventions::resource::SERVICE_NAME;
 use std::{thread, time::Duration};
-use tracing::{info, instrument};
-use tracing_opentelemetry::{MetricsLayer, OpenTelemetryLayer};
+use tracing::{Span, info, instrument};
+use tracing_opentelemetry::{MetricsLayer, OpenTelemetryLayer, OpenTelemetrySpanExt};
 use tracing_subscriber::{Registry, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 fn main() {
@@ -40,6 +40,8 @@ fn shave_yaks(mut yaks: Vec<Yak>) {
             tracing::warn!("Oh no, the yak is too mean to shave!");
         }
     }
+    
+    Span::current().set_status(opentelemetry::trace::Status::Ok);
 }
 
 fn init_tracing() {
